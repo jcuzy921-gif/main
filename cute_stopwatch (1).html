@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY TIMER - 碼表</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+TC:wght@500;700&display=swap');
+
+        body {
+            font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+            background-image: url('煞模耶.webp'), url('https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=1000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* 旋轉動畫 */
+        @keyframes rotateDash {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .animate-dash-spin {
+            transform-origin: center;
+            animation: rotateDash 40s linear infinite;
+        }
+        
+        .animate-dash-spin-fast {
+            transform-origin: center;
+            animation: rotateDash 10s linear infinite;
+        }
+
+        /* 按鈕立體效果 */
+        .btn-shadow-green {
+            box-shadow: 0 4px 0px #52BD88;
+        }
+        .btn-shadow-green:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0px #52BD88;
+        }
+
+        .btn-shadow-blue {
+            box-shadow: 0 4px 0px #97C9EF;
+        }
+        .btn-shadow-blue:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0px #97C9EF;
+        }
+
+        /* 中間圓圈背景圖與文字清晰度強化 */
+        .circle-bg {
+            background-image: url('https://i.postimg.cc/bdnBGcHT/image.jpg'), url('https://postimg.cc/bdnBGcHT');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .text-glow {
+            text-shadow: 0px 2px 8px rgba(255, 255, 255, 0.9), 0px 0px 4px rgba(255, 255, 255, 1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 select-none">
+
+    <!-- 主卡片容器 -->
+    <div class="w-full max-w-sm bg-[#FAF8EF]/90 backdrop-blur-md rounded-[32px] shadow-2xl overflow-hidden border-4 border-white/80 flex flex-col items-center">
+        
+        <!-- 頂部標題欄 -->
+        <div class="w-full bg-[#FF9BB0]/90 py-4 flex justify-center items-center">
+            <div class="bg-white/90 px-6 py-1.5 rounded-full shadow-sm flex items-center justify-center">
+                <span class="text-[#FF829E] font-extrabold text-lg tracking-wider flex items-center gap-2">
+                    <span class="text-xs">●</span> MY TIMER <span class="text-xs">●</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- 碼表主區域 -->
+        <div class="w-full px-6 pt-10 pb-8 flex flex-col items-center">
+            
+            <!-- 圓形計時視窗 -->
+            <div class="relative w-64 h-64 flex items-center justify-center mb-8">
+                
+                <!-- SVG 環形圖案（外圈邊框與動態虛線） -->
+                <svg class="absolute inset-0 w-full h-full z-10 pointer-events-none" viewBox="0 0 200 200">
+                    <circle 
+                        cx="100" 
+                        cy="100" 
+                        r="90" 
+                        fill="none" 
+                        stroke="#FFF2B2" 
+                        stroke-width="12" 
+                    />
+                    <circle 
+                        id="dashCircle"
+                        class="animate-dash-spin"
+                        cx="100" 
+                        cy="100" 
+                        r="90" 
+                        fill="none" 
+                        stroke="#FFFFFF" 
+                        stroke-width="4" 
+                        stroke-dasharray="8 16" 
+                        stroke-linecap="round"
+                    />
+
+                    <circle 
+                        cx="100" 
+                        cy="100" 
+                        r="72" 
+                        fill="none" 
+                        stroke="#FFD563" 
+                        stroke-width="14" 
+                    />
+                </svg>
+
+                <!-- 中間圓形背景圖內容區 -->
+                <div class="w-[130px] h-[130px] rounded-full circle-bg overflow-hidden flex items-center justify-center shadow-inner relative border-2 border-[#FFD563]">
+                    <!-- 半透明遮罩層提升數字可讀性 -->
+                    <div class="absolute inset-0 bg-white/40 backdrop-blur-[1px]"></div>
+
+                    <!-- 時間顯示區 -->
+                    <div class="relative z-10 flex flex-col items-center justify-center text-[#1C2D37] text-glow">
+                        <div id="mainTime" class="text-2xl font-black tracking-tight">
+                            00:00:00
+                        </div>
+                        <div id="msTime" class="text-lg font-extrabold tracking-wider mt-0.5 text-[#1C2D37]">
+                            000
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 控制按鈕 -->
+            <div class="w-full flex gap-4 px-2">
+                <button 
+                    id="startBtn" 
+                    class="flex-1 bg-[#73D6A3] hover:bg-[#62c993] text-white font-bold text-xl py-3 rounded-2xl transition-all duration-150 btn-shadow-green flex items-center justify-center"
+                >
+                    開始
+                </button>
+                
+                <button 
+                    id="resetBtn" 
+                    class="flex-1 bg-[#BBE0FA] hover:bg-[#a8d6f7] text-white font-bold text-xl py-3 rounded-2xl transition-all duration-150 btn-shadow-blue flex items-center justify-center"
+                >
+                    重設
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 計時邏輯 JavaScript -->
+    <script>
+        let startTime = 0;
+        let elapsedTime = 0;
+        let timerInterval = null;
+        let isRunning = false;
+
+        const mainTimeEl = document.getElementById('mainTime');
+        const msTimeEl = document.getElementById('msTime');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const dashCircle = document.getElementById('dashCircle');
+
+        function updateDisplay() {
+            const totalMs = elapsedTime;
+            
+            const hours = Math.floor(totalMs / 3600000);
+            const minutes = Math.floor((totalMs % 3600000) / 60000);
+            const seconds = Math.floor((totalMs % 60000) / 1000);
+            const ms = totalMs % 1000;
+
+            const pad = (num, size = 2) => String(num).padStart(size, '0');
+
+            mainTimeEl.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+            msTimeEl.textContent = pad(ms, 3);
+        }
+
+        function toggleTimer() {
+            if (!isRunning) {
+                startTime = Date.now() - elapsedTime;
+                timerInterval = setInterval(() => {
+                    elapsedTime = Date.now() - startTime;
+                    updateDisplay();
+                }, 10);
+                
+                isRunning = true;
+                startBtn.textContent = '暫停';
+                startBtn.classList.remove('bg-[#73D6A3]', 'btn-shadow-green');
+                startBtn.classList.add('bg-[#FF829E]');
+                startBtn.style.boxShadow = '0 4px 0px #E06B86';
+
+                dashCircle.classList.remove('animate-dash-spin');
+                dashCircle.classList.add('animate-dash-spin-fast');
+            } else {
+                clearInterval(timerInterval);
+                isRunning = false;
+                startBtn.textContent = '繼續';
+                startBtn.classList.remove('bg-[#FF829E]');
+                startBtn.classList.add('bg-[#73D6A3]');
+                startBtn.style.boxShadow = '';
+                startBtn.classList.add('btn-shadow-green');
+
+                dashCircle.classList.remove('animate-dash-spin-fast');
+                dashCircle.classList.add('animate-dash-spin');
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            elapsedTime = 0;
+            
+            updateDisplay();
+
+            startBtn.textContent = '開始';
+            startBtn.classList.remove('bg-[#FF829E]');
+            startBtn.classList.add('bg-[#73D6A3]');
+            startBtn.style.boxShadow = '';
+            startBtn.classList.add('btn-shadow-green');
+
+            dashCircle.classList.remove('animate-dash-spin-fast');
+            dashCircle.classList.add('animate-dash-spin');
+        }
+
+        startBtn.addEventListener('click', toggleTimer);
+        resetBtn.addEventListener('click', resetTimer);
+
+        updateDisplay();
+    </script>
+</body>
+</html>
